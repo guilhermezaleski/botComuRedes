@@ -19,9 +19,7 @@ def conectado(con, cliente):
 
     while True:
         msg = con.recv(BUFFER_SIZE)
-
         msg = msg.decode('utf8')
-
         print ('Cliente:', cliente,' Msg: ', msg)
 
         if msg == 'exit':

@@ -6,10 +6,6 @@ gui = Tk()
 
 class conectServidor:
 
-
-
-
-
     def conectar(self, servidor):
 
         if servidor != 'localhost':
@@ -20,9 +16,6 @@ class conectServidor:
         self.port = 8888
         self.BUFFER_SIZE = 1024
 
-        print("host: ", self.host)
-
-
         try:
             self.tcpClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.tcpClient.connect((self.host, self.port))
@@ -32,23 +25,15 @@ class conectServidor:
         else:
             return 'Conectado!'
 
-
     def desconectar(self):
         MESSAGE = 'exit'
         self.tcpClient.send(MESSAGE.encode('utf8'))
-        print ('Finalizando conexão com o servidor: ', socket.gethostname())
         self.tcpClient.close()
         return 'Desconectado!'
 
     def enviar_mensagem(self, MESSAGE):
-
         self.tcpClient.send(MESSAGE.encode('utf8'))
         return str('Recebido: '+ (self.tcpClient.recv(self.BUFFER_SIZE)).decode('utf8') + '\n')
-
-
-
-
-
 
 class Janela:
 
@@ -101,13 +86,11 @@ class Janela:
         self.text.configure(state=DISABLED)
 
     def enviar(self):
-
         msg = self.entryMensagem.get()
         self.setText('Enviado:  ' + msg )
         self.setText(conectServidor.enviar_mensagem(self, msg ))
 
     def conectar(self):
-
         self.servidor = self.entryServidor.get()
         print(self.servidor)
         self.setText('Conectando ao servidor ' + self.servidor +' ...')
@@ -116,10 +99,6 @@ class Janela:
     def desconectar(self):
         self.setText('Desconectando do servidor ...')
         self.setText(conectServidor.desconectar(self))
-
-
-
-
 
 Janela(gui)
 janela = Janela
