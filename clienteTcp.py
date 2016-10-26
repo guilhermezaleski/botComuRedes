@@ -6,20 +6,31 @@ gui = Tk()
 
 class conectServidor:
 
-    def conectar(self):
-        #host = socket.gethostname()
-        self.host = '192.168.216.34'
+
+
+
+
+    def conectar(self, servidor):
+
+        if servidor != 'localhost':
+            self.host = servidor
+        else:
+            self.host = socket.gethostname()
+
         self.port = 8888
         self.BUFFER_SIZE = 1024
+
         print("host: ", self.host)
-       # self.MESSAGE = input("tcpClient: Insira messagem ou exit:")
+
 
         try:
             self.tcpClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.tcpClient.connect((self.host, self.port))
-
         except:
-            print ("Erro ao conectar")
+            print("Erro ao conectar")
+            return 'Erro ao conectar!'
+        else:
+            return 'Conectado!'
 
 
     def desconectar(self):
@@ -27,19 +38,16 @@ class conectServidor:
         self.tcpClient.send(MESSAGE.encode('utf8'))
         print ('Finalizando conexão com o servidor: ', socket.gethostname())
         self.tcpClient.close()
+        return 'Desconectado!'
 
     def enviar_mensagem(self, MESSAGE):
 
         self.tcpClient.send(MESSAGE.encode('utf8'))
-        data = self.tcpClient.recv(self.BUFFER_SIZE)
-        print (" Cliente menssagem recebida: :", data)
-        MESSAGE = input("tcpClient: Insira messagem ou exit:")
+        return str('Recebido: '+ (self.tcpClient.recv(self.BUFFER_SIZE)).decode('utf8') + '\n')
 
 
-        if MESSAGE == 'exit':
-           self.tcpClient.send(MESSAGE.encode('utf8'))
-           print ('Finalizando conexão com o servidor: ', socket.gethostname())
-           self.tcpClient.close()
+
+
 
 
 class Janela:
@@ -86,7 +94,6 @@ class Janela:
         self.buttonEnviar = Button(self.frame02, text="Enviar", command=self.enviar)
         self.buttonEnviar.pack(side=LEFT)
 
-
     def setText(self, texto):
         self.text.configure(state=NORMAL)
         self.text.insert(INSERT, texto + '\n')
@@ -94,13 +101,22 @@ class Janela:
         self.text.configure(state=DISABLED)
 
     def enviar(self):
-        self.setText('Enviado: ' + self.entryMensagem.get())
+
+        msg = self.entryMensagem.get()
+        self.setText('Enviado:  ' + msg )
+        self.setText(conectServidor.enviar_mensagem(self, msg ))
 
     def conectar(self):
-        self.setText('Conectando ao servidor ' + self.entryServidor.get()+' ...')
+
+        self.servidor = self.entryServidor.get()
+        print(self.servidor)
+        self.setText('Conectando ao servidor ' + self.servidor +' ...')
+        self.setText(conectServidor.conectar(self, self.servidor))
 
     def desconectar(self):
         self.setText('Desconectando do servidor ...')
+        self.setText(conectServidor.desconectar(self))
+
 
 
 
@@ -108,5 +124,6 @@ class Janela:
 Janela(gui)
 janela = Janela
 
+gui.title('Cliente')
 gui.mainloop()
 
