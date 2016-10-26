@@ -2,7 +2,7 @@
 
 import socket
 from tkinter import *
-
+gui = Tk()
 
 class conectServidor:
 
@@ -11,7 +11,7 @@ class conectServidor:
         self.host = '192.168.216.34'
         self.port = 8888
         self.BUFFER_SIZE = 1024
-        self.print("host: ", self.host)
+        print("host: ", self.host)
        # self.MESSAGE = input("tcpClient: Insira messagem ou exit:")
 
         try:
@@ -36,62 +36,77 @@ class conectServidor:
         MESSAGE = input("tcpClient: Insira messagem ou exit:")
 
 
-
-
         if MESSAGE == 'exit':
            self.tcpClient.send(MESSAGE.encode('utf8'))
            print ('Finalizando conexão com o servidor: ', socket.gethostname())
            self.tcpClient.close()
 
-class App:
 
-    def __init__(self, master):
+class Janela:
 
-        self.master = master
+    def __init__(self, janela):
 
-        frame = Frame(master)
-        frame.pack()
+        self.servidor = ''
+        self.mensagem = ''
 
-        self.textString = StringVar()
+        self.frame00 = Frame(janela)
+        self.frame00.pack(side=TOP)
 
-        self.conect = Button(frame, text="Conectar", command=self.enviar_mensagem)
-        self.conect.grid(row=0, column=0)
+        self.labelServidor = Label(self.frame00, text="Servidor: ")
+        self.labelServidor.pack(side=LEFT)
 
-        self.desconect = Button(frame, text="Desconectar", command=self.enviar_mensagem)
-        self.desconect.grid(row=0, column=2)
+        self.entryServidor = Entry(self.frame00, width=30, textvariable=self.servidor)
+        self.entryServidor.insert(END, 'localhost')
+        self.entryServidor.pack(side=LEFT)
 
-        scrollbar = Scrollbar(master)
-        scrollbar.grid(row=1, column=3, sticky=W)
+        self.buttonConectar = Button(self.frame00, text = "Conectar", command=self.conectar)
+        self.buttonConectar.pack(side=LEFT)
 
-        self.text = Listbox(frame, bd=0, yscrollcommand=scrollbar.set)
-        self.text.grid(row=1, column=3, sticky=W)
-        scrollbar.config(command=self.text.yview)
+        self.buttonDesconectar = Button(self.frame00, text="Desconectar", command=self.desconectar)
+        self.buttonDesconectar.pack(side=LEFT)
 
-        self.msg = Label(frame, text='Mensagem: ', textvariable=self.textString)
-        self.msg.grid(row=2, sticky=W)
+        self.frame01 = Frame(janela)
+        self.frame01.pack(side=TOP)
 
-        self.entry = Entry(frame)
-        self.entry.grid(row=2, column=1, sticky=W+E)
+        self.text = Text(self.frame01, height=20, width=44)
+        self.vsb = Scrollbar(self.frame01, orient="vertical", command=self.text.yview)
+        self.text.configure(yscrollcommand=self.vsb.set, state=DISABLED)
+        self.vsb.pack(side="right", fill="y")
+        self.text.pack(side="left", fill="both")
 
-        self.enviar = Button(frame, text="Enviar", command=self.enviar_mensagem)
-        self.enviar.grid(row=2, column=2, sticky=E)
+        self.frame02 = Frame(janela)
+        self.frame02.pack(side=TOP)
 
-        self.master.after(500, self.oi)
+        self.labelMensagem = Label(self.frame02, text="Mensagem: ")
+        self.labelMensagem.pack(side=LEFT)
 
+        self.entryMensagem = Entry(self.frame02, width=30, textvariable=self.mensagem)
+        self.entryMensagem.pack(side=LEFT)
 
-    def enviar_mensagem(self):
-        conectServidor.enviar_mensagem(self.msg.getvar())
-
-
-    def oi(self):
-        self.master.after(500, self.oi)
-        self.text.delete(1.0, END)
-        self.text.insert(END, "server")
-
+        self.buttonEnviar = Button(self.frame02, text="Enviar", command=self.enviar)
+        self.buttonEnviar.pack(side=LEFT)
 
 
-root = Tk()
+    def setText(self, texto):
+        self.text.configure(state=NORMAL)
+        self.text.insert(INSERT, texto + '\n')
+        self.text.see('end')
+        self.text.configure(state=DISABLED)
 
-app = App(root)
+    def enviar(self):
+        self.setText('Enviado: ' + self.entryMensagem.get())
 
-root.mainloop()
+    def conectar(self):
+        self.setText('Conectando ao servidor ' + self.entryServidor.get()+' ...')
+
+    def desconectar(self):
+        self.setText('Desconectando do servidor ...')
+
+
+
+
+Janela(gui)
+janela = Janela
+
+gui.mainloop()
+
