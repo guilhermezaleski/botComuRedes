@@ -21,13 +21,12 @@ class conectServidor:
             self.tcpClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.tcpClient.connect((self.host, self.port))
         except:
-            print("Erro ao conectar")
             return 'Erro ao conectar!'
         else:
             return 'Conectado!'
 
     def desconectar(self):
-        MESSAGE = 'exit'
+        MESSAGE = 'exit@1234?'
         self.tcpClient.send(MESSAGE.encode('utf8'))
         self.tcpClient.close()
         return 'Desconectado!'
@@ -88,6 +87,7 @@ class Janela:
 
     def enviar(self):
         msg = self.entryMensagem.get()
+        self.entryMensagem.delete(0, END)
         self.setText('Enviado:  ' + msg )
         self.setText(conectServidor.enviar_mensagem(self, msg ))
 
