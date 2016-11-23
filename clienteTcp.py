@@ -31,7 +31,7 @@ class conectServidor:
         self.tcpClient.close()
         return 'Desconectado!'
 
-    def enviar_mensagem(self, MESSAGE):
+    def enviarmensagem(self, MESSAGE):
         self.tcpClient.send(MESSAGE.encode('utf8'))
         return str('Recebido: '+ (self.tcpClient.recv(self.BUFFER_SIZE)).decode('utf8') + '\n')
 
@@ -89,7 +89,7 @@ class Janela:
         msg = self.entryMensagem.get()
         self.entryMensagem.delete(0, END)
         self.setText('Enviado:  ' + msg )
-        self.setText(conectServidor.enviar_mensagem(self, msg ))
+        self.setText(conectServidor.enviarmensagem(self, msg ))
 
     def conectar(self):
         self.servidor = self.entryServidor.get()

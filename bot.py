@@ -1,11 +1,11 @@
 #coding: UTF-8
 
-import requests
-import json
-import urllib as url
+from bs4 import BeautifulSoup
+import urllib.request as url
+
 import re
 
-site = 'http://tempoagora.uol.com.br/previsaodotempo.html/brasil/'
+site = 'http://tempo.clic.com.br/'
 cidade = input('Forneça o nome da cidade: ')
 estado = input('Forneça a sigla do estado: ')
 
@@ -19,14 +19,14 @@ if len(estado) != 2:
    exit(1)
 
 #Formata a URL da cidade, garantindo que as siglas do estado serão maiúsculas
-url2 = site + cidade + '-' + estado.upper()
+url2 = site + estado + '/' + cidade.replace(' ','')
 
 
 
 print (' > Conectando-se a %s...' % url2)
 
 #Estabelece a conexão, com timeout de 5 segundos
-con = url.request(url2 , None , 5)
+con = url.urlopen(url2 , None , 5)
 
 print (' > Conexão estabelecida. Obtendo código HTML...')
 
@@ -37,21 +37,12 @@ HTML = con.read()
 
 print (' > Filtrando informações...\n')
 
-#Valida a página buscando o padrão "cidade - estado", que só é exibido em páginas válidas
-#EXEMPLO HTML: Barbacena - MG
-if re.search(r'[A-Z][^-]+- [A-Z]{2}' , HTML) == None:
-   print ('Cidade inválida!\n')
-   exit(1)
 
-#Busca a condição climática, que é informada entre os fragmentos de tags %;\"> e <
-#EXEMPLO HTML: <div style="float:left; width:450px; height:100%;">Predomínio de sol, apenas com pouca variação de nuvens</div>
-status = re.search(r'%;\">(.*?)<' , HTML)
-
-#Obtém a data e a hora da última atualização
-#EXEMPLO HTML: <p>Atualizado em: 14/09/2009 @ 20:30:00</p>
-atualizado = re.search(r'Atualizado em: .*[0-9]' , HTML)
+soup = BeautifulSoup(HTML)
+temperatura = re.search(r'[0-9]{2}' , str(soup.find('span', attrs={'class':'temperature_now'})))
+atualizado = re.search(r'Atualizado às .*[0-9]' , str(soup.find('span', attrs={'class':'updateTime'})))
 
 print ('*** CONDIÇÃO CLIMÁTICA EM %s - %s ***' % (cidade.upper() , estado.upper()))
-print (status.group(1))
-print (atualizado.group(0) , '\n')
+print (temperatura.group(0) + 'º')
+print (atualizado.group(0) ,'\n')
 
