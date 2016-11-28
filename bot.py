@@ -17,6 +17,7 @@ def comando(msg):
              "e Pablo Tessmann. Para a disciplina de \n" \
              "Redes de Computadores, ministrada pelo \n" \
              "professor Lucas Muller, semestre 2016/2."
+
    elif msg == '/datahora':
 
       now = datetime.now()
@@ -24,9 +25,28 @@ def comando(msg):
       hora = str(now.time())
 
       now = 'Dia ' + str(now.day) + ' de ' + str(now.month) + ' de ' + str(now.year) + \
-            '\n           Hora ' + hora[:5]
+            '\n          Hora ' + hora[:5]
 
       return now
+
+   elif msg == '/data':
+
+      now = datetime.now()
+
+      now = 'Dia ' + str(now.day) + ' de ' + str(now.month) + ' de ' + str(now.year)
+
+      return now
+
+   elif msg == '/hora':
+
+      now = datetime.now()
+
+      hora = str(now.time())
+
+      now = 'Hora ' + hora[:5]
+
+      return now
+
    elif msg[:6] == '/tempo':
       site = 'http://tempo.clic.com.br/'
       cidade = msg[7:-2]
@@ -43,14 +63,47 @@ def comando(msg):
             HTML = con.read()
 
             soup = BeautifulSoup(HTML)
+            cidadeTempo = re.search(r'Previsão do tempo em.*no ClicTempo', str(soup.find('meta', attrs={'id':'site-description'})))
             temperatura = re.search(r'[0-9]{2}' , str(soup.find('span', attrs={'class':'temperature_now'})))
             atualizado = re.search(r'Atualizado às .*[0-9]' , str(soup.find('span', attrs={'class':'updateTime'})))
 
-            return 'Temperatura ' + temperatura.group(0) + 'º ' + atualizado.group(0)
+            return cidadeTempo.group(0)+ ' ' + temperatura.group(0) + 'º\n' + atualizado.group(0)
 
-      except:
+      except Exception as e:
 
-         return  'Erro ' + str(con.status)
+         if str(e) == 'HTTP Error 404: NOT FOUND':
+            return 'Não foi possivel localizar\n' \
+                   '          essa cidade!'
+
+         return str(e)
+
+   elif msg[:11] == '/dicionario':
+      site = 'https://www.dicio.com.br/'
+      palavra = msg[12:]
+      con = ''
+
+      try:
+       url2 = site + palavra.replace(' ', '')
+       con = url.urlopen(url2 , None , 5)
+       HTML = con.read()
+
+       soup = BeautifulSoup(HTML)
+       significado = str(soup.find('p', attrs={'id':'significado'}))
+
+       idxInicio = significado.find('</span>')
+       idxInicio += 13
+       idxFinal = significado.find('</span>', idxInicio)
+
+       return  significado[idxInicio:idxFinal]
+
+
+      except Exception as e:
+
+               if str(e) == 'HTTP Error 404: NOT FOUND':
+                  return 'Não foi possivel localizar\n' \
+                         'essa palavra'
+               return str(e)
+
 
 
 

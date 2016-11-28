@@ -88,9 +88,10 @@ class Janela:
 
     def enviar(self):
         msg = self.entryMensagem.get()
-        self.entryMensagem.delete(0, END)
-        self.setText('Enviado:  ' + msg )
-        self.setText(conectServidor.enviarmensagem(self, msg ))
+        if msg != '':
+            self.entryMensagem.delete(0, END)
+            self.setText('Enviado:  ' + msg )
+            self.setText(conectServidor.enviarmensagem(self, msg ))
 
     def conectar(self):
         self.servidor = self.entryServidor.get()
