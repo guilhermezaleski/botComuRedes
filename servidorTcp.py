@@ -3,9 +3,8 @@
 
 import socket
 import _thread as thread
-import time
+import bot
 from datetime import datetime
-
 
 
 try:
@@ -50,29 +49,22 @@ def conectado(con, cliente, arquivolog):
         if msg == 'exit@1234?':
             break
 
-        if msg == 'ok':
-            msgEnvia = "ok"
-            con.send(msgEnvia.encode('utf8'))
-            try:
-                arquivolog = open('servidorLog.txt', 'a')
-                arquivolog.write(str(datetime.now()) + '   Enviado  ao cliente:' + str(cliente) +
-                                                                                ' Mensagem: ' + msgEnvia + '\n')
-                arquivolog.close()
-            except:
-                pass
-        else:
-            msgEnvia = "no"
-            con.send(msgEnvia.encode('utf8'))
-            try:
-                arquivolog = open('servidorLog.txt', 'a')
-                arquivolog.write(str(datetime.now()) + '   Enviado  ao cliente:' + str(cliente) +
-                                                                                ' Mensagem: ' + msgEnvia + '\n')
-                arquivolog.close()
-            except:
-                pass
+        msgEnvia = bot.comando(msg)
+
+        con.send(msgEnvia.encode('utf8'))
+
+        try:
+            arquivolog = open('servidorLog.txt', 'a')
+            arquivolog.write(str(datetime.now()) + '   Enviado  ao cliente:' + str(cliente) +
+                                                                            ' Mensagem: ' + msgEnvia + '\n')
+            arquivolog.close()
+        except:
+            pass
+
 
 
     con.close()
+
     try:
         arquivolog = open('servidorLog.txt', 'a')
         arquivolog.write(str(datetime.now()) + '   Finalizada conexção com cliente: '+ str(cliente) + '\n')

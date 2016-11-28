@@ -81,6 +81,7 @@ class Janela:
 
     def setText(self, texto):
         self.text.configure(state=NORMAL)
+        self.text.see('end')
         self.text.insert(INSERT, texto + '\n')
         self.text.see('end')
         self.text.configure(state=DISABLED)
