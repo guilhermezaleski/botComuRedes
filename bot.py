@@ -2,8 +2,13 @@
 
 from bs4 import BeautifulSoup
 import urllib.request as url
-from datetime import datetime
+from datetime import *
 import re
+
+diasemana = ['segunda-feira','terceira-feira','quarta-feira',
+                          'quinta-feira','sexta-feira','sabado','domingo']
+meses =['janeiro','fevereiro','março','abril','maio','junho',
+                 'julho','agosto','setembro','outubro','novembro','dezembro']
 
 '''Recebe o a mensagem, uma string,
 e identifica qual comando proceder'''
@@ -35,8 +40,8 @@ def comando(msg):
 
       hora = str(now.time())
 
-      now = 'Dia ' + str(now.day) + ' de ' + str(now.month) + ' de ' + str(now.year) + \
-            '\n          Hora ' + hora[:5]
+      now = 'Dia ' + str(now.day) + ' de ' + str(meses[now.month - 1]) + ' de ' + str(now.year) + \
+            '\n          Hora ' + hora[:5] + ' ' + str(diasemana[int(now.strftime('%w'))])
 
       return now
 
@@ -44,7 +49,8 @@ def comando(msg):
 
       now = datetime.now()
 
-      now = 'Dia ' + str(now.day) + ' de ' + str(now.month) + ' de ' + str(now.year)
+      now = 'Dia ' + str(now.day) + ' de ' + str(meses[now.month - 1]) + ' de ' + str(now.year) +\
+            '\n          ' + str(diasemana[int(now.strftime('%w'))])
 
       return now
 
