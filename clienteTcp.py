@@ -7,6 +7,7 @@ gui = Tk()
 
 class conectServidor:
 
+    '''Realiza conexao ao servidor'''
     def conectar(self, servidor):
 
         if servidor != 'localhost':
@@ -31,20 +32,23 @@ class conectServidor:
         else:
             return 'Conectado!'
 
+    '''Realiza desconexao ao servidor'''
     def desconectar(self):
 
-        MESSAGE = 'exit@1234?'
+        MESSAGE = 'exit@1234?'  # código para encerrar conexao
         self.tcpClient.send(MESSAGE.encode('utf8'))
         self.tcpClient.close()
 
         return 'Desconectado!'
 
+    '''Envia mensagem ao servidor'''
     def enviarmensagem(self, MESSAGE):
 
         self.tcpClient.send(MESSAGE.encode('utf8'))
 
         return str('Recebido: '+ (self.tcpClient.recv(self.BUFFER_SIZE)).decode('utf8') + '\n')
 
+'''Instanciação da janela gráfica'''
 class Janela:
 
     def __init__(self, janela):

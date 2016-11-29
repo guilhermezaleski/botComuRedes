@@ -3,32 +3,29 @@
 
 import socket
 import _thread as thread
-import bot
+import bot  # importação do arquivo com os comandos
 from datetime import datetime
 
 
 try:
 
-    arquivolog = open('servidorLog.txt', 'a')
+    arquivolog = open('servidorLog.txt', 'a') # abertura do arquivo de log
     linha = '\n\n' + str(datetime.now()) + '   Serviço iniciado em ' + socket.gethostname() + '\n'
     arquivolog.write(linha)
     arquivolog.close()
 
 except:
-
-    print('--- ERRO ao abrir arquivo de log!')
-
-
+    pass
 
 HOST = ''              # Endereco IP do Servidor
-PORT = 8888            # Porta que o Servidor esta
+PORT = 8888            # Porta que o Servidor estará escutando
 
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 1024  # tamanho do buffer do pacote a ser comunicado
 
-tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # socket TCP/IP
 orig = (HOST, PORT)
 tcp.bind(orig)
-tcp.listen(999)
+tcp.listen(999)   # até 999 conexões
 
 def conectado(con, cliente, arquivolog):
 
@@ -43,7 +40,7 @@ def conectado(con, cliente, arquivolog):
 
     while True:
 
-        msg = con.recv(BUFFER_SIZE)
+        msg = con.recv(BUFFER_SIZE)  # recece pacote do cliente
         msg = msg.decode('utf8')
 
         try:
@@ -55,12 +52,12 @@ def conectado(con, cliente, arquivolog):
         except:
             pass
 
-        if msg == 'exit@1234?':
+        if msg == 'exit@1234?': # comando para terminar conexão
             break
 
-        msgEnvia = bot.comando(msg)
+        msgEnvia = bot.comando(msg)  # envia, processa e recebe o resultado
 
-        con.send(msgEnvia.encode('utf8'))
+        con.send(msgEnvia.encode('utf8')) # envia o resultado para cliente
 
         try:
 
@@ -72,7 +69,7 @@ def conectado(con, cliente, arquivolog):
         except:
             pass
 
-    con.close()
+    con.close() # fecha conexão
 
     try:
 
@@ -83,11 +80,12 @@ def conectado(con, cliente, arquivolog):
     except:
         pass
 
-    thread.exit()
+    thread.exit() # encerra thread
 
 while True:
 
-    con, cliente = tcp.accept()
-    thread.start_new_thread(conectado, tuple([con, cliente, arquivolog]))
+    con, cliente = tcp.accept() # aguarda conexao do cliente
+    thread.start_new_thread(conectado, tuple([con, cliente, arquivolog])) # a cada conexão de um cliente é criada uma
+                                                                          # nova thread com socket
 
 tcp.close()
