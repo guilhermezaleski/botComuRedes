@@ -18,8 +18,19 @@ def comando(msg):
              "Redes de Computadores, ministrada pelo \n" \
              "professor Lucas Muller, semestre 2016/2."
 
-   elif msg == '/datahora':
+   elif msg[:5] == '/help':
+       return '--HELP\n' \
+              '        Comandos:\n' \
+              '      /autores  Autores do chat;\n' \
+              '      /datahora  Data e hora atual;\n' \
+              '      /data  Data atual;\n' \
+              '      /hora  Hora atual;\n' \
+              '      /tempo -cidade -sigla estado;\n' \
+              '            Previsão do tempo para a cidade;\n' \
+              '      /dicionario -palavra\n' \
+              '            Significado da palavra;\n'
 
+   elif msg[:9] == '/datahora':
       now = datetime.now()
 
       hora = str(now.time())
@@ -29,7 +40,7 @@ def comando(msg):
 
       return now
 
-   elif msg == '/data':
+   elif msg[:5] == '/data':
 
       now = datetime.now()
 
@@ -37,7 +48,7 @@ def comando(msg):
 
       return now
 
-   elif msg == '/hora':
+   elif msg[:5] == '/hora':
 
       now = datetime.now()
 
@@ -62,7 +73,7 @@ def comando(msg):
          if con.status == 200 :
             HTML = con.read()
 
-            soup = BeautifulSoup(HTML)
+            soup = BeautifulSoup(HTML, 'html.parser')
             cidadeTempo = re.search(r'Previsão do tempo em.*no ClicTempo', str(soup.find('meta', attrs={'id':'site-description'})))
             temperatura = re.search(r'[0-9]{2}' , str(soup.find('span', attrs={'class':'temperature_now'})))
             atualizado = re.search(r'Atualizado às .*[0-9]' , str(soup.find('span', attrs={'class':'updateTime'})))
@@ -78,7 +89,7 @@ def comando(msg):
          return str(e)
 
    elif msg[:11] == '/dicionario':
-      site = 'https://www.dicio.com.br/'
+      site = 'https://dicionariodoaurelio.com/'
       palavra = msg[12:]
       con = ''
 
@@ -87,12 +98,12 @@ def comando(msg):
        con = url.urlopen(url2 , None , 5)
        HTML = con.read()
 
-       soup = BeautifulSoup(HTML)
-       significado = str(soup.find('p', attrs={'id':'significado'}))
+       soup = BeautifulSoup(HTML, 'html.parser')
+       significado = str(soup.find('meta', attrs={'name':'description'}))
 
-       idxInicio = significado.find('</span>')
-       idxInicio += 13
-       idxFinal = significado.find('</span>', idxInicio)
+       idxInicio = significado.find(':')
+       idxInicio += 1
+       idxFinal = significado.find('.', idxInicio)
 
        return  significado[idxInicio:idxFinal]
 
@@ -104,52 +115,9 @@ def comando(msg):
                          'essa palavra'
                return str(e)
 
-
-
-
-
    else:
-      return "Comando não reconhecido!"
-
-'''
-site = 'http://tempo.clic.com.br/'
-cidade = input('Forneça o nome da cidade: ')
-estado = input('Forneça a sigla do estado: ')
-
-#Remove os espaços que possam existir em um nome de cidade composto
-cidade = cidade.replace(' ' , '')
-
-#Aborta a execução caso a sigla do estado tenha mais de dois caracteres
-
-if len(estado) != 2:
-   print ('\nA sigla do estado deve ter duas letras!\n')
-   exit(1)
-
-#Formata a URL da cidade, garantindo que as siglas do estado serão maiúsculas
-url2 = site + estado + '/' + cidade.replace(' ','')
+      return "Comando não reconhecido!\n" \
+             "          Use /help para ajuda."
 
 
-
-print (' > Conectando-se a %s...' % url2)
-
-#Estabelece a conexão, com timeout de 5 segundos
-con = url.urlopen(url2 , None , 5)
-
-print (' > Conexão estabelecida. Obtendo código HTML...')
-
-#Obtém o código HTML
-HTML = con.read()
-
-
-
-print (' > Filtrando informações...\n')
-
-
-soup = BeautifulSoup(HTML)
-temperatura = re.search(r'[0-9]{2}' , str(soup.find('span', attrs={'class':'temperature_now'})))
-atualizado = re.search(r'Atualizado às .*[0-9]' , str(soup.find('span', attrs={'class':'updateTime'})))
-
-print ('*** CONDIÇÃO CLIMÁTICA EM %s - %s ***' % (cidade.upper() , estado.upper()))
-print (temperatura.group(0) + 'º')
-print (atualizado.group(0) ,'\n')'''
 
