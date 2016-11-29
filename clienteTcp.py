@@ -10,29 +10,39 @@ class conectServidor:
     def conectar(self, servidor):
 
         if servidor != 'localhost':
+
             self.host = servidor
+
         else:
+
             self.host = socket.gethostname()
 
         self.port = 8888
         self.BUFFER_SIZE = 1024
 
         try:
+
             self.tcpClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.tcpClient.connect((self.host, self.port))
+
         except:
             return 'Erro ao conectar!'
+
         else:
             return 'Conectado!'
 
     def desconectar(self):
+
         MESSAGE = 'exit@1234?'
         self.tcpClient.send(MESSAGE.encode('utf8'))
         self.tcpClient.close()
+
         return 'Desconectado!'
 
     def enviarmensagem(self, MESSAGE):
+
         self.tcpClient.send(MESSAGE.encode('utf8'))
+
         return str('Recebido: '+ (self.tcpClient.recv(self.BUFFER_SIZE)).decode('utf8') + '\n')
 
 class Janela:
@@ -83,6 +93,7 @@ class Janela:
         self.buttonEnviar.pack(side=LEFT)
 
     def setText(self, texto):
+
         self.text.configure(state=NORMAL)
         self.text.see('end')
         self.text.insert(INSERT, texto + '\n')
@@ -90,28 +101,35 @@ class Janela:
         self.text.configure(state=DISABLED)
 
     def enviar(self, event):
+
         msg = self.entryMensagem.get()
+
         if msg != '':
+
             self.entryMensagem.delete(0, END)
             self.setText('Enviado:  ' + msg )
             self.setText(conectServidor.enviarmensagem(self, msg ))
 
     def conectar(self):
+
         self.servidor = self.entryServidor.get()
         self.setText('Conectando ao servidor ' + self.servidor +' ...')
         self.statusConexcao = conectServidor.conectar(self, self.servidor)
         self.setText(self.statusConexcao)
 
         if self.statusConexcao == 'Conectado!':
+
             self.buttonDesconectar.configure(state=NORMAL)
             self.buttonConectar.configure(state=DISABLED)
 
     def desconectar(self):
+
         self.setText('Desconectando do servidor ...')
         self.statusConexcao = conectServidor.desconectar(self)
         self.setText(self.statusConexcao)
 
         if self.statusConexcao == 'Desconectado!':
+
             self.buttonConectar.configure(state=NORMAL)
             self.buttonDesconectar.configure(state=DISABLED)
 
