@@ -6,8 +6,8 @@ from datetime import *
 import re
 from unicodedata import normalize
 
-diasemana = ['segunda-feira','terceira-feira','quarta-feira',
-                          'quinta-feira','sexta-feira','sabado','domingo']
+diasemana = ['domingo','segunda-feira','terceira-feira','quarta-feira',
+                          'quinta-feira','sexta-feira','sabado']
 meses =['janeiro','fevereiro','março','abril','maio','junho',
                  'julho','agosto','setembro','outubro','novembro','dezembro']
 

@@ -14,8 +14,12 @@ try:
     arquivolog.write(linha)
     arquivolog.close()
 
-except:
-    pass
+    print("Arquivo LOG aberto\nServidor executando...")
+
+except Exception as e:
+
+    print('\n\n---Erro ao abrir arquivo Log\n\n\n')
+    print(e)
 
 HOST = ''              # Endereco IP do Servidor
 PORT = 8888            # Porta que o Servidor estará escutando
