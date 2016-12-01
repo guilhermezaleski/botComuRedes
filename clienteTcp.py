@@ -7,7 +7,7 @@ gui = Tk()
 
 class conectServidor:
 
-    '''Realiza conexao ao servidor'''
+    '''Realiza conexão ao servidor'''
     def conectar(self, servidor):
 
         if servidor != 'localhost':

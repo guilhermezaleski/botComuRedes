@@ -44,7 +44,7 @@ def conectado(con, cliente, arquivolog):
 
     while True:
 
-        msg = con.recv(BUFFER_SIZE)  # recece pacote do cliente
+        msg = con.recv(BUFFER_SIZE)  # recebe pacote do cliente
         msg = msg.decode('utf8')
 
         try:
